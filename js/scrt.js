@@ -12,39 +12,120 @@ var page_object = {
     div_num : {}
 };
 
-function load_post (url_input) {
+function InitStartPage()
+{
+    var newDivH1 = document.createElement('div');
+    newDivH1.id = 'newDivH1';
+    newDivH1.className = 'row textalign header_margin';
+    newDivH1.style.fontWeight = 'bold';
+
+    var newH1 = document.createElement('h1');
+    newH1.innerText = 'Find some heckin recepies';
+
+    newDivH1.appendChild(newH1);
+
+    var newDivContolElements = document.createElement('div');
+    newDivContolElements.className = 'row textalign header_margin';
+
+    var newBtnStart = document.createElement('button');
+    newBtnStart.innerHTML =  'Load Posts';
+    newBtnStart.className = 'btn btn-primary progress-button';
+    newBtnStart.id = 'BtnStart';
+    newBtnStart.setAttribute('data-style', 'fill');
+    newBtnStart.setAttribute('data-horizontal',0);
+    newBtnStart.addEventListener('click', () => DownLoadPosts());
+
+    var newSelectCountPages = document.createElement('select')
+    newSelectCountPages.className = 'select_post';
+    newSelectCountPages.id = 'count_p';
+    newSelectCountPages.addEventListener('change', (event) => change_count_page(event));
+
+    var newOption10 = document.createElement('option');
+    newOption10.innerText = '10 post';
+    newOption10.value = '10';
+
+    var newOption20 = document.createElement('option');
+    newOption20.innerText = '20 post';
+    newOption20.value = '20';
+
+    var newOption50 = document.createElement('option');
+    newOption50.innerText = '50 post';
+    newOption50.value = '50';
+
+    newSelectCountPages.appendChild(newOption10);
+    newSelectCountPages.appendChild(newOption20);
+    newSelectCountPages.appendChild(newOption50);
+
+    newDivContolElements.appendChild(newBtnStart);
+    newDivContolElements.appendChild(newSelectCountPages);
+
+    var newDivRow = document.createElement('div');
+    newDivRow.className = 'row';
+
+    var newDivRowPages = document.createElement('div');
+    newDivRowPages.className = 'page';
+    newDivRowPages.id = 'page';
+
+    newDivRow.appendChild(newDivRowPages);
+
+
+    var newDivRowPag = document.createElement('div');
+    newDivRowPag.className = 'row textalign';
+
+    var newDivPagin = document.createElement('div');
+    newDivPagin.className = 'paginn';
+    newDivPagin.id = 'pag';
+
+    var newUlPagin = document.createElement('ul');
+    newUlPagin.className = 'pagination';
+    newUlPagin.id = 'ul_pag';
+    newUlPagin.addEventListener('click', () => ul_pagination(event));
+
+
+    newDivPagin.appendChild(newUlPagin);
+    newDivRowPag.appendChild(newDivPagin);
+
+    document.getElementById('container').appendChild(newDivH1);
+    document.getElementById('container').appendChild(newDivContolElements);
+    document.getElementById('container').appendChild(newDivRow);
+    document.getElementById('container').appendChild(newDivRowPag);
+
+
+};
+
+function LoadPost (url_input) {
     axios.get(url_input)
         .then(function (response) {
-            manipulation(response.data);
+            RenderPosts(response.data);
         })
         .catch(function (error) {
             console.log(error);
         });
 }
 
-function load_user (parent,p_id ) {
+function LoadUser (parent,p_id ) {
     const url_input = apiURL +'users?&id=' + p_id;
     axios.get(url_input)
         .then(function (response) {
-            handle_user(response.data,parent,p_id);
+            EstimationUser(response.data,parent,p_id);
         })
         .catch(function (error) {
             console.log(error);
         });
 }
 
-function load_comments (parent,p_id ) {
+function LoadComments (parent,p_id ) {
     const url_input = apiURL +'comments?&postId=' + p_id;
     axios.get(url_input)
         .then(function (response) {
-            handle_comments(response.data,parent,p_id);
+            EstimationComments(response.data,parent,p_id);
         })
         .catch(function (error) {
             console.log(error);
         });
 }
 
-function insert_elemets(id, title, body, user_id) {
+function InsertElemets(id, title, body, user_id) {
     var newDiv = document.createElement('div');
     newDiv.id = 'newDiv'+id;
     newDiv.className = 'num';
@@ -64,11 +145,11 @@ function insert_elemets(id, title, body, user_id) {
     newBtn.innerHTML =  'User';
     newBtn.className = 'btn btn-primary btn-mar';
     newBtn.id = 'newBtn'+id;
-    newBtn.addEventListener('click', () => load_user(newDiv, id) );
+    newBtn.addEventListener('click', () => LoadUser(newDiv, id) );
     newBtnCom.innerHTML =  'Comments';
     newBtnCom.className = 'btn btn-primary btn-mar';
     newBtnCom.id = 'newBtnCom'+id;
-    newBtnCom.addEventListener('click', () => load_comments(newDiv, id) );
+    newBtnCom.addEventListener('click', () => LoadComments(newDiv, id) );
     newDiv.appendChild(newTitle);
     newDiv.appendChild(newBody);
     newDiv.appendChild(newBtn);
@@ -79,8 +160,9 @@ function insert_elemets(id, title, body, user_id) {
 
 
 function DownLoadPosts() {
-  load_post(apiURL+ 'posts');
-  var btn = document.getElementById('btn_load');
+  LoadPost(apiURL+ 'posts');
+  var btn = document.getElementById('BtnStart');
+
   btn.classList.add("disabled");
 }
 
@@ -94,9 +176,7 @@ function Close_user(v_id) {
     } ;
 }
 
-function handle_user(arr_input, parent,p_id) {
-
-    var res = [];
+function EstimationUser(arr_input, parent,p_id) {
 
     var w = document.getElementById('newDivPop' + p_id);
 
@@ -104,15 +184,7 @@ function handle_user(arr_input, parent,p_id) {
         w.remove();
     } else {
 
-        res = arr_input;
-
-        var name = res[0].name;
-        var username = res[0].username;
-        var email = res[0].email;
-        var address = res[0].address;
-        var phone = res[0].phone;
-        var website = res[0].website;
-        var company = res[0].company;
+        const { name, username, email, address, phone, website, company} = arr_input[0];
 
         var newDivPop = document.createElement('div');
         newDivPop.className = 'pop_up'+p_id;
@@ -135,8 +207,6 @@ function handle_user(arr_input, parent,p_id) {
 
         var newEmail = document.createElement('p');
         newEmail.innerHTML = 'Email: ' + email;
-
-
 
         var newWebsite = document.createElement('p');
         newWebsite.innerHTML = 'Website: ' + website;
@@ -220,8 +290,7 @@ function handle_user(arr_input, parent,p_id) {
     }
 }
 
-function handle_comments(arr_input, parent,p_id) {
-    var res = [];
+function EstimationComments(arr_input, parent,p_id) {
 
     var w = document.getElementById('newDivPopCom' + p_id);
 
@@ -229,24 +298,22 @@ function handle_comments(arr_input, parent,p_id) {
       w.remove();
     } else {
 
-        res = arr_input;
-
         var newDivPopCom = document.createElement('div');
         newDivPopCom.className = 'com_up' + p_id;
         newDivPopCom.style.fontWeight = 'normal';
         newDivPopCom.style.fontSize = '10px';
         newDivPopCom.id = 'newDivPopCom' + p_id;
 
-        for (let i = 0; i < res.length; i++) {
+        for (let i = 0; i < arr_input.length; i++) {
 
             let newNameCom = document.createElement('p');
-            newNameCom.innerHTML = 'Name: ' + res[i].name;
+            newNameCom.innerHTML = 'Name: ' + arr_input[i].name;
 
             let newEmailCom = document.createElement('p');
-            newEmailCom.innerHTML = 'Email: ' + res[i].email;
+            newEmailCom.innerHTML = 'Email: ' + arr_input[i].email;
 
             let newBodyCom = document.createElement('p');
-            newBodyCom.innerHTML = 'Body: ' + res[i].body;
+            newBodyCom.innerHTML = 'Body: ' + arr_input[i].body;
 
             let newDelimiter = document.createElement('p');
             newDelimiter.innerHTML = '---------------------------------------------------------------------------------------';
@@ -263,12 +330,9 @@ function handle_comments(arr_input, parent,p_id) {
 }
 
 
-function manipulation(arr) {
+function RenderPosts(arr) {
 
-    var res = [];
     var div_tar = document.getElementById('page');
-
-    res  = arr;
 
     page_object.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
 
@@ -286,9 +350,9 @@ function manipulation(arr) {
 
     //выводим первые записи {cnt}
 
-  for (let i = 0; i < res.length; i++){
+  for (let i = 0; i < arr.length; i++){
         (function () {
-            var newDiv = insert_elemets(res[i].id, res[i].title, res[i].body, res[i].userId);
+            var newDiv = InsertElemets(arr[i].id, arr[i].title, arr[i].body, arr[i].userId);
             div_tar.appendChild(newDiv);
         })();
     }
@@ -303,20 +367,20 @@ function manipulation(arr) {
 
     page_object.main_page = document.getElementById("page1");
     page_object.main_page.classList.add("paginator_active");
-
 }
 
 
-function change_count_page(count_p) {
-    var j = document.getElementById('ul_pag').childElementCount;
+function change_count_page(event) {
+       var j = document.getElementById('ul_pag').childElementCount;
 
     for (let i = 0; i < j; i++ ){
         document.getElementById('ul_pag').childNodes[0].remove();
     }
 
-    page_object.cnt = count_p; //сколько отображаем сначала
+    page_object.cnt = event.target.value //сколько отображаем сначала
     page_object.page='';
 
+    console.log(222, page_object.cnt_page(),page_object.cnt );
     page_object.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
 
     for (let i = 0; i < page_object.cnt_page(); i++) {
@@ -327,6 +391,9 @@ function change_count_page(count_p) {
         };
     }
     page_object.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
+
+     console.log(page_object.page);
+
 
     page_object.paginator = document.querySelector(".pagination");
     page_object.paginator.innerHTML = page_object.page;
@@ -382,7 +449,6 @@ function ul_pagination(event){
         document.getElementById('next').parentNode.classList.remove("disabled");
     }
 
-
     for (var i = 0; i < page_object.div_num.length; i++) {
         var data_num = page_object.div_num[i].dataset.num;
         if (data_num <= data_page || data_num >= data_page) {
@@ -396,5 +462,6 @@ function ul_pagination(event){
         if (j >= page_object.cnt) break;
         page_object.div_num[i].style.display = "block";
         j++;
-    }
+    };
 }
+
