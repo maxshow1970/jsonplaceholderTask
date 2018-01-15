@@ -1,0 +1,61 @@
+.container {
+    width: 750px;
+    max-width: 730px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+.form-control {
+    width: 300px;
+}
+
+.btn-primary {
+    background: #148544;
+    margin-left: 5px;
+    height: 38px;
+
+}
+.btn-mar{
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.textalign{
+    text-align: center;
+    justify-content: center;
+}
+
+p{
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.pop_up{
+    margin-bottom: 20px;
+}
+
+.select_post{
+    margin-left: 20px;
+    height: 40px;
+    vertical-align: middle;
+}
+
+.header_margin{
+    margin-bottom: 50px;
+}
+
+.num {
+   display: none;
+}
+
+.pagination > li > span {
+   cursor: pointer;
+}
+
+.pagination_active {
+  color: red;
+}
+
