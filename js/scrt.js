@@ -26,6 +26,10 @@ function InitStartPage()
 
     var newDivContolElements = document.createElement('div');
     newDivContolElements.className = 'row textalign header_margin';
+    var newDivLoader = document.createElement('div');
+    newDivLoader.className = 'ld ld-hourglass ld-spin-fast';
+    newDivLoader.style = 'font-size:64px;color:#0275d8; display: none ;margin-bottom: 50px; left: 50%';
+    newDivLoader.id = 'loader';
 
     var newBtnStart = document.createElement('button');
     newBtnStart.innerHTML =  'Load Posts';
@@ -68,7 +72,6 @@ function InitStartPage()
 
     newDivRow.appendChild(newDivRowPages);
 
-
     var newDivRowPag = document.createElement('div');
     newDivRowPag.className = 'row textalign';
 
@@ -86,6 +89,7 @@ function InitStartPage()
     newDivRowPag.appendChild(newDivPagin);
 
     document.getElementById('container').appendChild(newDivH1);
+    document.getElementById('container').appendChild(newDivLoader);
     document.getElementById('container').appendChild(newDivContolElements);
     document.getElementById('container').appendChild(newDivRow);
     document.getElementById('container').appendChild(newDivRowPag);
@@ -93,34 +97,49 @@ function InitStartPage()
 
 };
 
+
+function rrr() {
+    document.getElementById("loader").style.display = 'block';
+};
+
 function LoadPost (url_input) {
+       document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
-        .then(function (response) {
+        .then(function (response){
             RenderPosts(response.data);
+            document.getElementById("loader").style.display = 'none';
         })
         .catch(function (error) {
+            document.getElementById("loader").style.display = 'none';
             console.log(error);
         });
 }
 
+
 function LoadUser (parent,p_id ) {
     const url_input = apiURL +'users?&id=' + p_id;
+    document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
         .then(function (response) {
             EstimationUser(response.data,parent,p_id);
+            document.getElementById("loader").style.display = 'none';
         })
         .catch(function (error) {
+            document.getElementById("loader").style.display = 'none';
             console.log(error);
         });
 }
 
 function LoadComments (parent,p_id ) {
     const url_input = apiURL +'comments?&postId=' + p_id;
+    document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
         .then(function (response) {
             EstimationComments(response.data,parent,p_id);
+            document.getElementById("loader").style.display = 'none';
         })
         .catch(function (error) {
+            document.getElementById("loader").style.display = 'none';
             console.log(error);
         });
 }
@@ -464,4 +483,5 @@ function ul_pagination(event){
         j++;
     };
 }
+
 
