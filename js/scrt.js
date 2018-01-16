@@ -97,11 +97,6 @@ function InitStartPage()
 
 };
 
-
-function rrr() {
-    document.getElementById("loader").style.display = 'block';
-};
-
 function LoadPost (url_input) {
        document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
@@ -147,32 +142,47 @@ function LoadComments (parent,p_id ) {
 function InsertElemets(id, title, body, user_id) {
     var newDiv = document.createElement('div');
     newDiv.id = 'newDiv'+id;
-    newDiv.className = 'num';
-    newDiv.style.position = 'relative';
+    newDiv.className = 'num card ';
+  //  newDiv.style.position = 'relative';
+    newDiv.style.marginBottom = '30px';
     newDiv.setAttribute('data-num', id);
-
     newDiv.style.fontWeight = 'bold';
-    var newTitle = document.createElement('p');
-    newTitle.className = 'name';
-    var newBody = document.createElement('p');
-    var newBtn = document.createElement('button');
-    var newBtnCom = document.createElement('button');
 
-    newTitle.innerHTML = title + '</br>';
-    newBody.innerHTML = body + '</br>';
+
+    var newTitle = document.createElement('div');
+    newTitle.className = 'name card-header';
+    newTitle.innerHTML = title;
+    newTitle.style.textAlign = 'center';
+
+    var newBody = document.createElement('div');
+    newBody.className = 'card-body';
+    newBody.innerHTML = body;
+  //  newBody.style.fontWeight = 'normal';
+
+    var newFooter = document.createElement('div')
+    newFooter.className = 'card-footer d-flex justify-content-around align-items-center';
+
+    var newBtn = document.createElement('button');
     newBody.style.fontWeight = 'normal';
     newBtn.innerHTML =  'User';
     newBtn.className = 'btn btn-primary btn-mar';
     newBtn.id = 'newBtn'+id;
+//    newBtn.addEventListener('click', () => LoadUser(newDiv, id) );
     newBtn.addEventListener('click', () => LoadUser(newDiv, id) );
+
+    var newBtnCom = document.createElement('button');
     newBtnCom.innerHTML =  'Comments';
     newBtnCom.className = 'btn btn-primary btn-mar';
     newBtnCom.id = 'newBtnCom'+id;
     newBtnCom.addEventListener('click', () => LoadComments(newDiv, id) );
+
+
+    newFooter.appendChild(newBtn);
+    newFooter.appendChild(newBtnCom);
+
     newDiv.appendChild(newTitle);
     newDiv.appendChild(newBody);
-    newDiv.appendChild(newBtn);
-    newDiv.appendChild(newBtnCom);
+    newDiv.appendChild(newFooter);
 
     return newDiv;
 }
@@ -184,8 +194,6 @@ function DownLoadPosts() {
 
   btn.classList.add("disabled");
 }
-
-
 
 function Close_user(v_id) {
     var w = document.getElementById('newDivPop' + v_id);
@@ -205,18 +213,29 @@ function EstimationUser(arr_input, parent,p_id) {
 
         const { name, username, email, address, phone, website, company} = arr_input[0];
 
-        var newDivPop = document.createElement('div');
-        newDivPop.className = 'pop_up'+p_id;
-        newDivPop.id = 'newDivPop' + p_id;
-        newDivPop.style.fontWeight = 'normal';
-        newDivPop.style.fontSize = '10px';
-        newDivPop.style.position  = 'absolute';
-        newDivPop.style.backgroundColor = '#fcfffa';
-        newDivPop.style.zIndex = 1;
-        newDivPop.style.border = '4px double black';
 
-        newDivPop.style.left = '185px';
-        newDivPop.style.top = '0px';
+        var newDivPop = document.createElement('div');
+        newDivPop.className = 'modal fade';
+        newDivPop.id = 'newDivPop' + p_id;
+
+        var newDialog = document.createElement('div');
+        newDialog.className = 'modal-dialog';
+
+        var newContent = document.createElement('div');
+        newContent.className = 'modal-content';
+
+        var newHeader = document.createElement('div');
+        newHeader.className = 'modal-header';
+
+        var newTitle = document.createElement('h4');
+        newTitle.className = 'modal-title';
+        newTitle.innerText = 'User';
+
+        var newBody = document.createElement('div');
+        newBody.className = 'modal-body';
+        newBody.style.fontSize = '10px';
+
+
 
         var newName = document.createElement('p');
         newName.innerHTML = 'Name: ' + name;
@@ -239,73 +258,91 @@ function EstimationUser(arr_input, parent,p_id) {
         var newStreet = document.createElement('li');
         newStreet.innerHTML = 'Street: ' + address.street;
 
-       var newSuite = document.createElement('li');
-       newSuite.innerHTML = 'Suite: ' + address.suite;
+        var newSuite = document.createElement('li');
+        newSuite.innerHTML = 'Suite: ' + address.suite;
 
-       var newCity = document.createElement('li');
-       newCity.innerHTML = 'City: ' + address.city;
+        var newCity = document.createElement('li');
+        newCity.innerHTML = 'City: ' + address.city;
 
-       var newZipcode = document.createElement('li');
-       newZipcode.innerHTML = 'Zipcode: ' + address.zipcode;
+        var newZipcode = document.createElement('li');
+        newZipcode.innerHTML = 'Zipcode: ' + address.zipcode;
 
-       var newGeo = document.createElement('li');
-       newGeo.innerHTML = 'Geo: ' ;
+        var newGeo = document.createElement('li');
+        newGeo.innerHTML = 'Geo: ' ;
 
-       var newUl_geo = document.createElement('ul');
+        var newUl_geo = document.createElement('ul');
 
-       var newLat = document.createElement('li');
-       newLat.innerHTML = 'Lat: ' + address.geo.lat;
+        var newLat = document.createElement('li');
+        newLat.innerHTML = 'Lat: ' + address.geo.lat;
 
-       var newLng = document.createElement('li');
-       newLng.innerHTML = 'Lng: ' + address.geo.lng;
+        var newLng = document.createElement('li');
+        newLng.innerHTML = 'Lng: ' + address.geo.lng;
 
-       newUl_geo.appendChild(newLat);
-       newUl_geo.appendChild(newLng);
+        newUl_geo.appendChild(newLat);
+        newUl_geo.appendChild(newLng);
 
-       newUl_adr.appendChild(newStreet);
-       newUl_adr.appendChild(newSuite);
-       newUl_adr.appendChild(newCity);
-       newUl_adr.appendChild(newZipcode);
-       newUl_adr.appendChild(newGeo);
-       newUl_adr.appendChild(newUl_geo);
+        newUl_adr.appendChild(newStreet);
+        newUl_adr.appendChild(newSuite);
+        newUl_adr.appendChild(newCity);
+        newUl_adr.appendChild(newZipcode);
+        newUl_adr.appendChild(newGeo);
+        newUl_adr.appendChild(newUl_geo);
 
-       var newCompany = document.createElement('p');
-       newCompany.innerHTML = 'Company: ' ;
+        var newCompany = document.createElement('p');
+        newCompany.innerHTML = 'Company: ' ;
 
-       var newUl_company = document.createElement('ul');
+        var newUl_company = document.createElement('ul');
 
-       var newName_com = document.createElement('li');
-       newName_com.innerHTML = 'Name: ' + company.name;
+        var newName_com = document.createElement('li');
+        newName_com.innerHTML = 'Name: ' + company.name;
 
-       var newCatchPhrase = document.createElement('li');
-       newCatchPhrase.innerHTML = 'CatchPhrase: ' + company.catchPhrase;
+        var newCatchPhrase = document.createElement('li');
+        newCatchPhrase.innerHTML = 'CatchPhrase: ' + company.catchPhrase;
 
-       var newBs = document.createElement('li');
-       newBs.innerHTML = 'Bs: ' + company.bs;
+        var newBs = document.createElement('li');
+        newBs.innerHTML = 'Bs: ' + company.bs;
 
+
+
+        newUl_company.appendChild(newName_com);
+        newUl_company.appendChild(newCatchPhrase);
+        newUl_company.appendChild(newBs);
+
+        newBody.appendChild(newName);
+        newBody.appendChild(newUsername);
+        newBody.appendChild(newEmail);
+        newBody.appendChild(newPhone);
+        newBody.appendChild(newWebsite);
+        newBody.appendChild(newAddress);
+        newBody.appendChild(newUl_adr);
+        newBody.appendChild(newCompany);
+        newBody.appendChild(newUl_company);
+
+
+        var newFooter = document.createElement('div');
+        newFooter.className = 'modal-footer';
 
         var newBtnClose = document.createElement('button');
-        newBtnClose.innerHTML =  'Close';
-        newBtnClose.className = 'btn btn-primary btn-mar';
-        newBtnClose.style.textAlign = 'center';
-        newBtnClose.id = 'newBtnClose'+p_id;
-        newBtnClose.addEventListener('click', () => Close_user(p_id));
+        newBtnClose.className = 'btn btn-default';
+        newBtnClose.setAttribute('data-dismiss','modal');
+        newBtnClose.innerText = 'Close';
 
-       newUl_company.appendChild(newName_com);
-       newUl_company.appendChild(newCatchPhrase);
-       newUl_company.appendChild(newBs);
 
-        newDivPop.appendChild(newName);
-        newDivPop.appendChild(newUsername);
-        newDivPop.appendChild(newEmail);
-        newDivPop.appendChild(newPhone);
-        newDivPop.appendChild(newWebsite);
-        newDivPop.appendChild(newAddress);
-        newDivPop.appendChild(newUl_adr);
-        newDivPop.appendChild(newCompany);
-        newDivPop.appendChild(newUl_company);
-        newDivPop.appendChild(newBtnClose);
+
+
+        newFooter.appendChild(newBtnClose);
+        newHeader.appendChild(newTitle);
+
+        newContent.appendChild(newHeader);
+        newContent.appendChild(newBody);
+        newContent.appendChild(newFooter);
+        newDialog.appendChild(newContent);
+        newDivPop.appendChild(newDialog);
+
+
+
         parent.appendChild(newDivPop);
+        $('#newDivPop' + p_id ).modal();
     }
 }
 
@@ -378,9 +415,14 @@ function RenderPosts(arr) {
 
     page_object.div_num = document.querySelectorAll(".num");
 
+    console.log(page_object.div_num, page_object.div_num.length ,page_object.div_num.style);
+
     for (var i = 0; i < page_object.div_num.length; i++) {
         if (i < page_object.cnt) {
             page_object.div_num[i].style.display = "block";
+        }
+        else {
+            page_object.div_num[i].style.display = "none";
         }
     }
 
@@ -420,6 +462,8 @@ function change_count_page(event) {
     for (var i = 0; i < page_object.div_num.length; i++) {
         if (i < page_object.cnt) {
             page_object.div_num[i].style.display = "block";
+        } else {
+            page_object.div_num[i].style.display = "none";
         }
     }
 
