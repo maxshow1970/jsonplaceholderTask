@@ -91,11 +91,12 @@ var pageObject = {
     newDivPagin.appendChild(newUlPagin);
     newDivRowPag.appendChild(newDivPagin);
 
-    document.getElementById('container').appendChild(newDivH1);
-    document.getElementById('container').appendChild(newDivLoader);
-    document.getElementById('container').appendChild(newDivContolElements);
-    document.getElementById('container').appendChild(newDivRow);
-    document.getElementById('container').appendChild(newDivRowPag);
+    var cont = document.getElementById('container');
+    cont.appendChild(newDivH1);
+    cont.appendChild(newDivLoader);
+    cont.appendChild(newDivContolElements);
+    cont.appendChild(newDivRow);
+    cont.appendChild(newDivRowPag);
 
 
 })();
