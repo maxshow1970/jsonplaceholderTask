@@ -1,207 +1,281 @@
 ;(function examples() {
 
+    const apiURL = 'https://jsonplaceholder.typicode.com/';
 
-const apiURL = 'https://jsonplaceholder.typicode.com/';
+    var idLoadDiv;
 
-var pageObject = {
-    count : 100, //всего записей
-    cnt : 10, //сколько отображаем сначала
-    cnt_page : function() {
-          return Math.ceil(this.count / this.cnt);
-          },   //кол-во страниц
-    page : "",
-    paginator : null,
-    main_page : null,
-    div_num : {}
-};
+    var pageObject = {
+        count: 100, //всего записей
+        cnt: 10, //сколько отображаем сначала
+        cnt_page: function () {
+            return Math.ceil(this.count / this.cnt);
+        },   //кол-во страниц
+        page: "",
+        paginator: null,
+        main_page: null,
+        div_num: {}
+    };
 
-    function initStartPage(idLoad)
-{
-    var newDivH1 = document.createElement('div');
-    newDivH1.id = 'newDivH1';
-    newDivH1.className = 'row textalign header_margin';
-    newDivH1.style.fontWeight = 'bold';
+    function initStartPage(idLoad) {
+        var newDivH1 = document.createElement('div');
+        newDivH1.id = 'newDivH1';
+        newDivH1.className = 'row textalign header_margin';
+        newDivH1.style.fontWeight = 'bold';
 
-    var newH1 = document.createElement('h1');
-    newH1.innerText = 'Find some heckin recepies';
+        var newH1 = document.createElement('h1');
+        newH1.innerText = 'Find some heckin recepies';
 
-    newDivH1.appendChild(newH1);
+        newDivH1.appendChild(newH1);
 
-    var newDivContolElements = document.createElement('div');
-    newDivContolElements.className = 'row textalign header_margin';
-    var newDivLoader = document.createElement('div');
-    newDivLoader.className = 'ld ld-hourglass ld-spin-fast';
-    newDivLoader.style = 'font-size:64px;color:#0275d8; display: none ;margin-bottom: 50px; left: 50%';
-    newDivLoader.id = 'loader';
+        var newDivContolElements = document.createElement('div');
+        newDivContolElements.className = 'row textalign header_margin';
 
-    var newBtnStart = document.createElement('button');
-    newBtnStart.innerHTML =  'Load Posts';
-    newBtnStart.className = 'btn btn-primary progress-button';
-    newBtnStart.id = 'BtnStart';
-    newBtnStart.setAttribute('data-style', 'fill');
-    newBtnStart.setAttribute('data-horizontal',0);
-    newBtnStart.addEventListener('click', () => downLoadPosts());
+        var newDivLoader = document.createElement('div');
+        newDivLoader.className = 'ld ld-hourglass ld-spin-fast';
+        newDivLoader.style = 'font-size:64px;color:#0275d8; display: none ;margin-bottom: 50px; left: 50%';
+        newDivLoader.id = 'loader';
 
-    var newSelectCountPages = document.createElement('select')
-    newSelectCountPages.className = 'select_post';
-    newSelectCountPages.id = 'count_p';
-    newSelectCountPages.addEventListener('change', (event) => changeCountPage(event));
+        var newBtnStart = document.createElement('button');
+        newBtnStart.innerHTML = 'Load Posts';
+        newBtnStart.className = 'btn btn-primary progress-button';
+        newBtnStart.id = 'BtnStart';
+        newBtnStart.setAttribute('data-style', 'fill');
+        newBtnStart.setAttribute('data-horizontal', 0);
+        newBtnStart.addEventListener('click', () => downLoadPosts()) ;
 
-    var newOption10 = document.createElement('option');
-    newOption10.innerText = '10 post';
-    newOption10.value = '10';
-
-    var newOption20 = document.createElement('option');
-    newOption20.innerText = '20 post';
-    newOption20.value = '20';
-
-    var newOption50 = document.createElement('option');
-    newOption50.innerText = '50 post';
-    newOption50.value = '50';
-
-    newSelectCountPages.appendChild(newOption10);
-    newSelectCountPages.appendChild(newOption20);
-    newSelectCountPages.appendChild(newOption50);
-
-    newDivContolElements.appendChild(newBtnStart);
-    newDivContolElements.appendChild(newSelectCountPages);
-
-    var newDivRow = document.createElement('div');
-    newDivRow.className = 'row';
-
-    var newDivRowPages = document.createElement('div');
-    newDivRowPages.className = 'page';
-    newDivRowPages.id = 'page';
-
-    newDivRow.appendChild(newDivRowPages);
-
-    var newDivRowPag = document.createElement('div');
-    newDivRowPag.className = 'row textalign';
-
-    var newDivPagin = document.createElement('div');
-    newDivPagin.className = 'paginn';
-    newDivPagin.id = 'pag';
-
-    var newUlPagin = document.createElement('ul');
-    newUlPagin.className = 'pagination';
-    newUlPagin.id = 'ul_pag';
-    newUlPagin.addEventListener('click', () => clickPagination(event));
+        var newSelectCountPages = document.createElement('select');
+        newSelectCountPages.className = 'select_post';
+        newSelectCountPages.id = 'count_p';
+        newSelectCountPages.addEventListener('change', (event) => changeCountPage(event));
 
 
-    newDivPagin.appendChild(newUlPagin);
-    newDivRowPag.appendChild(newDivPagin);
+        var newOption10 = document.createElement('option');
+        newOption10.innerText = '10 post';
+        newOption10.value = '10';
 
-    var cont = document.getElementById(idLoad);
-    cont.appendChild(newDivH1);
-    cont.appendChild(newDivLoader);
-    cont.appendChild(newDivContolElements);
-    cont.appendChild(newDivRow);
-    cont.appendChild(newDivRowPag);
+        var newOption20 = document.createElement('option');
+        newOption20.innerText = '20 post';
+        newOption20.value = '20';
 
+        var newOption50 = document.createElement('option');
+        newOption50.innerText = '50 post';
+        newOption50.value = '50';
 
-};
+        newSelectCountPages.appendChild(newOption10);
+        newSelectCountPages.appendChild(newOption20);
+        newSelectCountPages.appendChild(newOption50);
 
-function loadPost (url_input) {
-    document.getElementById("loader").style.display = 'block';
-    axios.get(url_input)
-        .then(function (response){
-            renderPosts(response.data);
-            document.getElementById("loader").style.display = 'none';
-        })
-        .catch(function (error) {
-            document.getElementById("loader").style.display = 'none';
-            console.log(error);
-        });
-}
+        newDivContolElements.appendChild(newBtnStart);
+        newDivContolElements.appendChild(newSelectCountPages);
 
+        var newDivRow = document.createElement('div');
+        newDivRow.className = 'row';
 
-function loadUser (parent,p_id ) {
-    const url_input = apiURL +'users?&id=' + p_id;
-    document.getElementById("loader").style.display = 'block';
-    axios.get(url_input)
-        .then(function (response) {
-            estimationUser(response.data,parent,p_id);
-            document.getElementById("loader").style.display = 'none';
-        })
-        .catch(function (error) {
-            document.getElementById("loader").style.display = 'none';
-            console.log(error);
-        });
-}
+        var newDivRowPages = document.createElement('div');
+        newDivRowPages.className = 'page';
+        newDivRowPages.id = 'page';
 
-function loadComments (parent,p_id ) {
-    const url_input = apiURL +'comments?&postId=' + p_id;
-    document.getElementById("loader").style.display = 'block';
-    axios.get(url_input)
-        .then(function (response) {
-            estimationComments(response.data,parent,p_id);
-            document.getElementById("loader").style.display = 'none';
-        })
-        .catch(function (error) {
-            document.getElementById("loader").style.display = 'none';
-            console.log(error);
-        });
-}
+        newDivRow.appendChild(newDivRowPages);
 
-function insertElemets(id, title, body, user_id) {
-    var newDiv = document.createElement('div');
-    newDiv.id = 'newDiv'+id;
-    newDiv.className = 'num card ';
-  //  newDiv.style.position = 'relative';
-    newDiv.style.marginBottom = '30px';
-    newDiv.setAttribute('data-num', id);
-    newDiv.style.fontWeight = 'bold';
+        var newDivRowPag = document.createElement('div');
+        newDivRowPag.className = 'row textalign';
+
+        var newDivPagin = document.createElement('div');
+        newDivPagin.className = 'paginn';
+        newDivPagin.id = 'pag';
+
+        var newUlPagin = document.createElement('ul');
+        newUlPagin.className = 'pagination';
+        newUlPagin.id = 'ul_pag';
+        newUlPagin.addEventListener('click', () => clickPagination(event));
 
 
-    var newTitle = document.createElement('div');
-    newTitle.className = 'name card-header';
-    newTitle.innerHTML = title;
-    newTitle.style.textAlign = 'center';
+        newDivPagin.appendChild(newUlPagin);
+        newDivRowPag.appendChild(newDivPagin);
 
-    var newBody = document.createElement('div');
-    newBody.className = 'card-body';
-    newBody.innerHTML = body;
-  //  newBody.style.fontWeight = 'normal';
-
-    var newFooter = document.createElement('div')
-    newFooter.className = 'card-footer d-flex justify-content-around align-items-center';
-
-    var newBtn = document.createElement('button');
-    newBody.style.fontWeight = 'normal';
-    newBtn.innerHTML =  'User';
-    newBtn.className = 'btn btn-primary btn-mar';
-    newBtn.id = 'newBtn'+id;
-//    newBtn.addEventListener('click', () => LoadUser(newDiv, id) );
-    newBtn.addEventListener('click', () => loadUser(newDiv, id) );
-
-    var newBtnCom = document.createElement('button');
-    newBtnCom.innerHTML =  'Comments';
-    newBtnCom.className = 'btn btn-primary btn-mar';
-    newBtnCom.id = 'newBtnCom'+id;
-    newBtnCom.addEventListener('click', () => loadComments(newDiv, id) );
+        if (idLoad instanceof Node) {
+           var cont = idLoad;
+            console.log(1, cont);
+        } else if ( typeof idLoad === 'string') {
+            var cont = document.getElementById(idLoad);
+            console.log(1, cont);
+        } else {
+            console.log(3);
+            return alert('Данное значение не является ни Нодье, ни id');
+        }
 
 
-    newFooter.appendChild(newBtn);
-    newFooter.appendChild(newBtnCom);
 
-    newDiv.appendChild(newTitle);
-    newDiv.appendChild(newBody);
-    newDiv.appendChild(newFooter);
+    //    var cont = document.getElementById(idLoad);
+        idLoadDiv = cont;
+        cont.appendChild(newDivH1);
+        cont.appendChild(newDivLoader);
+        cont.appendChild(newDivContolElements);
+        cont.appendChild(newDivRow);
+        cont.appendChild(newDivRowPag);
 
-    return newDiv;
-}
+
+    };
+
+    function handleError(parent, typeError, pId) {
+
+            var newDivError = document.createElement('div');
+            newDivError.style.backgroundColor = '#CC1214';
+            newDivError.id = 'newDivError';
+            newDivError.style.color = '#fff';
+            newDivError.style.display = 'block';
+            newDivError.style.padding = '10px';
+
+            var newPError = document.createElement('p');
+            newPError.innerText = 'Attention!\n' +
+                     'An error occurred while loading!';
+
+            var newBtnError = document.createElement('button');
+            newBtnError.innerHTML = 'Restarting';
+            newBtnError.className = 'btn btn-primary btn-mar';
+            newBtnError.id = 'newBtnErrorPost' + pId;
+
+            if (typeError ==='P') {
+                newBtnError.addEventListener('click', () => downLoadPosts());
+            } else if (typeError ==='U') {
+                      newBtnError.addEventListener('click', () => loadUser(newDiv, pId));
+                   } else {
+                          newBtnError.addEventListener('click', () => loadComments(newDiv, pId));
+                   };
+
+            newDivError.appendChild(newPError);
+            newDivError.appendChild(newBtnError);
+
+            parent.appendChild(newDivError);
+
+    };
+
+    function loadPost(url_input) {
+        document.getElementById("loader").style.display = 'block';
+
+        var w = document.getElementById('newDivError');
+
+        if (w) {
+            w.remove();
+        };
+
+        axios.get(url_input)
+            .then(function (response) {
+                renderPosts(response.data);
+                document.getElementById("loader").style.display = 'none';
+            })
+            .catch(function (error) {
+                handleError(idLoadDiv, 'P', 0);
+                document.getElementById("loader").style.display = 'none';
+                console.log(error);
+            });
+    };
 
 
-function downLoadPosts() {
-  loadPost(apiURL+ 'posts');
-  var btn = document.getElementById('BtnStart');
+    function loadUser(parent, p_id) {
+        const url_input = apiURL + 'users?&id=' + p_id;
+        document.getElementById("loader").style.display = 'block';
+        var w = document.getElementById('newDivError');
 
-  btn.classList.add("disabled");
-}
+        if (w) {
+            w.remove();
+        };
 
-function estimationUser(arr_input, parent,p_id) {
+        axios.get(url_input)
+            .then(function (response) {
+                estimationUser(response.data, parent, p_id);
+                document.getElementById("loader").style.display = 'none';
+            })
+            .catch(function (error) {
+                handleError(parent, 'U', p_id);
+                document.getElementById("loader").style.display = 'none';
+                console.log(error);
+            });
+    };
 
-        const { name, username, email, address, phone, website, company} = arr_input[0];
+    function loadComments(parent, p_id) {
+        const url_input = apiURL + 'comments?&postId=' + p_id;
+        document.getElementById("loader").style.display = 'block';
+        var w = document.getElementById('newDivError');
+
+        if (w) {
+            w.remove();
+        };
+        axios.get(url_input)
+            .then(function (response) {
+                estimationComments(response.data, parent, p_id);
+                document.getElementById("loader").style.display = 'none';
+            })
+            .catch(function (error) {
+                handleError(parent, 'C', p_id);
+                document.getElementById("loader").style.display = 'none';
+                console.log(error);
+            });
+    };
+
+    function insertElemets(id, title, body, user_id) {
+        var newDiv = document.createElement('div');
+        newDiv.id = 'newDiv' + id;
+        newDiv.className = 'num card ';
+        //  newDiv.style.position = 'relative';
+        newDiv.style.marginBottom = '30px';
+        newDiv.setAttribute('data-num', id);
+        newDiv.style.fontWeight = 'bold';
+
+
+        var newTitle = document.createElement('div');
+        newTitle.className = 'name card-header';
+        newTitle.innerHTML = title;
+        newTitle.style.textAlign = 'center';
+
+        var newBody = document.createElement('div');
+        newBody.className = 'card-body';
+        newBody.innerHTML = body;
+        //  newBody.style.fontWeight = 'normal';
+
+        var newFooter = document.createElement('div')
+        newFooter.className = 'card-footer d-flex justify-content-around align-items-center';
+
+        var newBtn = document.createElement('button');
+        newBody.style.fontWeight = 'normal';
+        newBtn.innerHTML = 'User';
+        newBtn.className = 'btn btn-primary btn-mar';
+        newBtn.id = 'newBtn' + id;
+        newBtn.addEventListener('click', () => loadUser(newDiv, id));
+
+        var newBtnCom = document.createElement('button');
+        newBtnCom.innerHTML = 'Comments';
+        newBtnCom.className = 'btn btn-primary btn-mar';
+        newBtnCom.id = 'newBtnCom' + id;
+        newBtnCom.addEventListener('click', () => loadComments(newDiv, id));
+
+
+        newFooter.appendChild(newBtn);
+        newFooter.appendChild(newBtnCom);
+
+        newDiv.appendChild(newTitle);
+        newDiv.appendChild(newBody);
+        newDiv.appendChild(newFooter);
+
+        return newDiv;
+    }
+
+
+    function downLoadPosts() {
+        var w = document.getElementById('newDivError');
+
+        if (w) {
+            w.remove();
+        };
+        loadPost(apiURL + 'posts');
+        var btn = document.getElementById('BtnStart');
+
+        btn.classList.add("disabled");
+    }
+
+    function estimationUser(arr_input, parent, p_id) {
+
+        const {name, username, email, address, phone, website, company} = arr_input[0];
 
         var newDivPop = document.createElement('div');
         newDivPop.className = 'modal fade';
@@ -237,7 +311,9 @@ function estimationUser(arr_input, parent,p_id) {
         newWebsite.innerHTML = 'Website: ' + website;
 
         var newAddress = document.createElement('p');
-        newAddress.innerHTML = 'Address: ' ;var newPhone= document.createElement('p');
+        newAddress.innerHTML = 'Address: ';
+
+        var newPhone = document.createElement('p');
         newPhone.innerHTML = 'Phone: ' + phone;
 
         var newUl_adr = document.createElement('ul');
@@ -255,7 +331,7 @@ function estimationUser(arr_input, parent,p_id) {
         newZipcode.innerHTML = 'Zipcode: ' + address.zipcode;
 
         var newGeo = document.createElement('li');
-        newGeo.innerHTML = 'Geo: ' ;
+        newGeo.innerHTML = 'Geo: ';
 
         var newUl_geo = document.createElement('ul');
 
@@ -276,7 +352,7 @@ function estimationUser(arr_input, parent,p_id) {
         newUl_adr.appendChild(newUl_geo);
 
         var newCompany = document.createElement('p');
-        newCompany.innerHTML = 'Company: ' ;
+        newCompany.innerHTML = 'Company: ';
 
         var newUl_company = document.createElement('ul');
 
@@ -303,13 +379,12 @@ function estimationUser(arr_input, parent,p_id) {
         newBody.appendChild(newCompany);
         newBody.appendChild(newUl_company);
 
-
         var newFooter = document.createElement('div');
         newFooter.className = 'modal-footer';
 
         var newBtnClose = document.createElement('button');
         newBtnClose.className = 'btn btn-default';
-        newBtnClose.setAttribute('data-dismiss','modal');
+        newBtnClose.setAttribute('data-dismiss', 'modal');
         newBtnClose.innerText = 'Close';
 
         newFooter.appendChild(newBtnClose);
@@ -322,181 +397,186 @@ function estimationUser(arr_input, parent,p_id) {
         newDivPop.appendChild(newDialog);
 
         parent.appendChild(newDivPop);
-        $('#newDivPop' + p_id ).modal();
- //  }
-}
+        $('#newDivPop' + p_id).modal();
 
-function estimationComments(arr_input, parent,p_id) {
-
-    var w = document.getElementById('newDivPopCom' + p_id);
-
-    if (w) {
-      w.remove();
-    } else {
-
-        var newDivPopCom = document.createElement('div');
-        newDivPopCom.className = 'com_up' + p_id;
-        newDivPopCom.style.fontWeight = 'normal';
-        newDivPopCom.style.fontSize = '10px';
-        newDivPopCom.id = 'newDivPopCom' + p_id;
-
-        for (let i = 0; i < arr_input.length; i++) {
-
-            let newNameCom = document.createElement('p');
-            newNameCom.innerHTML = 'Name: ' + arr_input[i].name;
-
-            let newEmailCom = document.createElement('p');
-            newEmailCom.innerHTML = 'Email: ' + arr_input[i].email;
-
-            let newBodyCom = document.createElement('p');
-            newBodyCom.innerHTML = 'Body: ' + arr_input[i].body;
-
-            let newDelimiter = document.createElement('p');
-            newDelimiter.innerHTML = '---------------------------------------------------------------------------------------';
-
-
-            newDivPopCom.appendChild(newNameCom);
-            newDivPopCom.appendChild(newEmailCom);
-            newDivPopCom.appendChild(newBodyCom);
-            newDivPopCom.appendChild(newDelimiter);
-        }
-
-        parent.appendChild(newDivPopCom);
-    }
-}
-
-
-function renderPosts(arr) {
-
-    var div_tar = document.getElementById('page');
-
-    pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
-
-    for (let i = 0; i < pageObject.cnt_page(); i++) {
-        if (i === 0) {
-            pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
-        } else {
-            pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
-        };
-    }
-    pageObject.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
-
-    pageObject.paginator = document.querySelector(".pagination");
-    pageObject.paginator.innerHTML = pageObject.page;
-
-    //выводим первые записи {cnt}
-
-  for (let i = 0; i < arr.length; i++){
-        (function () {
-            var newDiv = insertElemets(arr[i].id, arr[i].title, arr[i].body, arr[i].userId);
-            div_tar.appendChild(newDiv);
-        })();
-    }
-
-    pageObject.div_num = document.querySelectorAll(".num");
-
-    for (var i = 0; i < pageObject.div_num.length; i++) {
-        if (i < pageObject.cnt) {
-            pageObject.div_num[i].style.display = "block";
-        }
-        else {
-            pageObject.div_num[i].style.display = "none";
-        }
-    }
-
-    pageObject.main_page = document.getElementById("page1");
-    pageObject.main_page.classList.add("paginator_active");
-}
-
-function changeCountPage(event) {
-
-    document.getElementById('ul_pag').innerHTML = '';
-
-    pageObject.cnt = event.target.value //сколько отображаем сначала
-    pageObject.page='';
-
-    pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
-
-    for (let i = 0; i < pageObject.cnt_page(); i++) {
-        if (i === 0) {
-            pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
-        } else {
-            pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
-        };
-    }
-    pageObject.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
-
-    pageObject.paginator = document.querySelector(".pagination");
-    pageObject.paginator.innerHTML = pageObject.page;
-
-    for (var i = 0; i < pageObject.div_num.length; i++) {
-        if (i < pageObject.cnt) {
-            pageObject.div_num[i].style.display = "block";
-        } else {
-            pageObject.div_num[i].style.display = "none";
-        }
-    }
-
-    pageObject.main_page = document.getElementById("page1");
-    pageObject.main_page.classList.add("paginator_active");
-}
-
-
-function clickPagination(event){
-    var e = event || window.event;
-    var target = e.target;
-    var id = target.id;
-    var parntNode;
-    var parntNewNode;
-
-    if (target.tagName.toLowerCase() != "span") return;
-
-    var data_page = +target.dataset.page;
-
-    if (id ==='next'){
-       id = pageObject.main_page.parentNode.nextSibling.childNodes[0].id;
-       data_page = pageObject.main_page.parentNode.nextSibling.childNodes[0].dataset.page;
-     };
-
-    if (id === 'prev'){
-        id = pageObject.main_page.parentNode.previousSibling.childNodes[0].id;
-        data_page = pageObject.main_page.parentNode.previousSibling.childNodes[0].dataset.page;
-     }
-
-    pageObject.main_page.parentNode.classList.remove("disabled");
-    pageObject.main_page.classList.remove("paginator_active");
-
-    pageObject.main_page = document.getElementById(id);
-
-    pageObject.main_page.classList.add("paginator_active");
-    pageObject.main_page.parentNode.classList.add("disabled");
-
-    if (parseInt(id.substr(4)) === 1) {
-        document.getElementById('prev').parentNode.classList.add("disabled");
-    } else if (parseInt(id.substr(4)) === pageObject.cnt_page()) {
-        document.getElementById('next').parentNode.classList.add("disabled");
-    } else {
-        document.getElementById('prev').parentNode.classList.remove("disabled");
-        document.getElementById('next').parentNode.classList.remove("disabled");
-    }
-
-    for (var i = 0; i < pageObject.div_num.length; i++) {
-        var data_num = pageObject.div_num[i].dataset.num;
-        if (data_num <= data_page || data_num >= data_page) {
-            pageObject.div_num[i].style.display = "none";
-        }
-    }
-
-    var j = 0;
-
-    for (var i = data_page; i < pageObject.div_num.length; i++) {
-        if (j >= pageObject.cnt) break;
-        pageObject.div_num[i].style.display = "block";
-        j++;
     };
-}
+
+    function estimationComments(arr_input, parent, p_id) {
+
+        var w = document.getElementById('newDivPopCom' + p_id);
+
+        if (w) {
+            w.remove();
+        } else {
+
+            var newDivPopCom = document.createElement('div');
+            newDivPopCom.className = 'com_up' + p_id;
+            newDivPopCom.style.fontWeight = 'normal';
+            newDivPopCom.style.fontSize = '10px';
+            newDivPopCom.id = 'newDivPopCom' + p_id;
+
+            for (let i = 0; i < arr_input.length; i++) {
+
+                let newNameCom = document.createElement('p');
+                newNameCom.innerHTML = 'Name: ' + arr_input[i].name;
+
+                let newEmailCom = document.createElement('p');
+                newEmailCom.innerHTML = 'Email: ' + arr_input[i].email;
+
+                let newBodyCom = document.createElement('p');
+                newBodyCom.innerHTML = 'Body: ' + arr_input[i].body;
+
+                let newDelimiter = document.createElement('p');
+                newDelimiter.innerHTML = '---------------------------------------------------------------------------------------';
+
+                newDivPopCom.appendChild(newNameCom);
+                newDivPopCom.appendChild(newEmailCom);
+                newDivPopCom.appendChild(newBodyCom);
+                newDivPopCom.appendChild(newDelimiter);
+            }
+
+            parent.appendChild(newDivPopCom);
+        }
+    };
+
+
+    function renderPosts(arr) {
+
+        var div_tar = document.getElementById('page');
+
+        pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
+
+        for (let i = 0; i < pageObject.cnt_page(); i++) {
+            if (i === 0) {
+                pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            } else {
+                pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            }
+            ;
+        }
+        pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
+
+        pageObject.paginator = document.querySelector(".pagination");
+        pageObject.paginator.innerHTML = pageObject.page;
+
+        //выводим первые записи {cnt}
+
+        for (let i = 0; i < arr.length; i++) {
+            (function () {
+                var newDiv = insertElemets(arr[i].id, arr[i].title, arr[i].body, arr[i].userId);
+                div_tar.appendChild(newDiv);
+            })();
+        };
+
+        pageObject.div_num = document.querySelectorAll(".num");
+
+        for (var i = 0; i < pageObject.div_num.length; i++) {
+            if (i < pageObject.cnt) {
+                pageObject.div_num[i].style.display = "block";
+            }
+            else {
+                pageObject.div_num[i].style.display = "none";
+            }
+        };
+
+        pageObject.main_page = document.getElementById("page1");
+        pageObject.main_page.classList.add("paginator_active");
+    };
+
+    function changeCountPage(event) {
+
+        document.getElementById('ul_pag').innerHTML = '';
+
+        pageObject.cnt = event.target.value //сколько отображаем сначала
+        pageObject.page = '';
+
+        pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
+
+        for (let i = 0; i < pageObject.cnt_page(); i++) {
+            if (i === 0) {
+                pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            } else {
+                pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            }
+            ;
+        }
+        pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
+
+        pageObject.paginator = document.querySelector(".pagination");
+        pageObject.paginator.innerHTML = pageObject.page;
+
+        for (var i = 0; i < pageObject.div_num.length; i++) {
+            if (i < pageObject.cnt) {
+                pageObject.div_num[i].style.display = "block";
+            } else {
+                pageObject.div_num[i].style.display = "none";
+            }
+        };
+
+        pageObject.main_page = document.getElementById("page1");
+        pageObject.main_page.classList.add("paginator_active");
+    };
+
+
+    function clickPagination(event) {
+        var e = event || window.event;
+        var target = e.target;
+        var id = target.id;
+        var parntNode;
+        var parntNewNode;
+
+        if (target.tagName.toLowerCase() != "span") return;
+
+        var data_page = +target.dataset.page;
+
+        if (id === 'next') {
+            id = pageObject.main_page.parentNode.nextSibling.childNodes[0].id;
+            data_page = pageObject.main_page.parentNode.nextSibling.childNodes[0].dataset.page;
+        };
+
+        if (id === 'prev') {
+            id = pageObject.main_page.parentNode.previousSibling.childNodes[0].id;
+            data_page = pageObject.main_page.parentNode.previousSibling.childNodes[0].dataset.page;
+        };
+
+        pageObject.main_page.parentNode.classList.remove("disabled");
+        pageObject.main_page.classList.remove("paginator_active");
+
+        pageObject.main_page = document.getElementById(id);
+
+        pageObject.main_page.classList.add("paginator_active");
+        pageObject.main_page.parentNode.classList.add("disabled");
+
+        if (parseInt(id.substr(4)) === 1) {
+            document.getElementById('prev').parentNode.classList.add("disabled");
+        } else if (parseInt(id.substr(4)) === pageObject.cnt_page()) {
+            document.getElementById('next').parentNode.classList.add("disabled");
+        } else {
+            document.getElementById('prev').parentNode.classList.remove("disabled");
+            document.getElementById('next').parentNode.classList.remove("disabled");
+        };
+
+        for (var i = 0; i < pageObject.div_num.length; i++)
+           {
+            var data_num = pageObject.div_num[i].dataset.num;
+            if (data_num <= data_page || data_num >= data_page) {
+                pageObject.div_num[i].style.display = "none";
+           }
+        };
+
+        var j = 0;
+
+        for (var i = data_page; i < pageObject.div_num.length; i++) {
+            if (j >= pageObject.cnt) break;
+            pageObject.div_num[i].style.display = "block";
+            j++;
+        };
+    }
 
     return {
-        init(idContainer) { initStartPage(idContainer)}
-           };
+        init(idContainer)
+        {
+          initStartPage(idContainer)
+        }
+    };
 }()).init('container');
