@@ -1,6 +1,9 @@
+;(function examples() {
+
+
 const apiURL = 'https://jsonplaceholder.typicode.com/';
 
-var page_object = {
+var pageObject = {
     count : 100, //всего записей
     cnt : 10, //сколько отображаем сначала
     cnt_page : function() {
@@ -12,7 +15,7 @@ var page_object = {
     div_num : {}
 };
 
-function InitStartPage()
+    (function initStartPage()
 {
     var newDivH1 = document.createElement('div');
     newDivH1.id = 'newDivH1';
@@ -37,12 +40,12 @@ function InitStartPage()
     newBtnStart.id = 'BtnStart';
     newBtnStart.setAttribute('data-style', 'fill');
     newBtnStart.setAttribute('data-horizontal',0);
-    newBtnStart.addEventListener('click', () => DownLoadPosts());
+    newBtnStart.addEventListener('click', () => downLoadPosts());
 
     var newSelectCountPages = document.createElement('select')
     newSelectCountPages.className = 'select_post';
     newSelectCountPages.id = 'count_p';
-    newSelectCountPages.addEventListener('change', (event) => change_count_page(event));
+    newSelectCountPages.addEventListener('change', (event) => changeCountPage(event));
 
     var newOption10 = document.createElement('option');
     newOption10.innerText = '10 post';
@@ -82,7 +85,7 @@ function InitStartPage()
     var newUlPagin = document.createElement('ul');
     newUlPagin.className = 'pagination';
     newUlPagin.id = 'ul_pag';
-    newUlPagin.addEventListener('click', () => ul_pagination(event));
+    newUlPagin.addEventListener('click', () => clickPagination(event));
 
 
     newDivPagin.appendChild(newUlPagin);
@@ -95,13 +98,13 @@ function InitStartPage()
     document.getElementById('container').appendChild(newDivRowPag);
 
 
-};
+})();
 
-function LoadPost (url_input) {
-       document.getElementById("loader").style.display = 'block';
+function loadPost (url_input) {
+    document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
         .then(function (response){
-            RenderPosts(response.data);
+            renderPosts(response.data);
             document.getElementById("loader").style.display = 'none';
         })
         .catch(function (error) {
@@ -111,12 +114,12 @@ function LoadPost (url_input) {
 }
 
 
-function LoadUser (parent,p_id ) {
+function loadUser (parent,p_id ) {
     const url_input = apiURL +'users?&id=' + p_id;
     document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
         .then(function (response) {
-            EstimationUser(response.data,parent,p_id);
+            estimationUser(response.data,parent,p_id);
             document.getElementById("loader").style.display = 'none';
         })
         .catch(function (error) {
@@ -125,12 +128,12 @@ function LoadUser (parent,p_id ) {
         });
 }
 
-function LoadComments (parent,p_id ) {
+function loadComments (parent,p_id ) {
     const url_input = apiURL +'comments?&postId=' + p_id;
     document.getElementById("loader").style.display = 'block';
     axios.get(url_input)
         .then(function (response) {
-            EstimationComments(response.data,parent,p_id);
+            estimationComments(response.data,parent,p_id);
             document.getElementById("loader").style.display = 'none';
         })
         .catch(function (error) {
@@ -139,7 +142,7 @@ function LoadComments (parent,p_id ) {
         });
 }
 
-function InsertElemets(id, title, body, user_id) {
+function insertElemets(id, title, body, user_id) {
     var newDiv = document.createElement('div');
     newDiv.id = 'newDiv'+id;
     newDiv.className = 'num card ';
@@ -168,13 +171,13 @@ function InsertElemets(id, title, body, user_id) {
     newBtn.className = 'btn btn-primary btn-mar';
     newBtn.id = 'newBtn'+id;
 //    newBtn.addEventListener('click', () => LoadUser(newDiv, id) );
-    newBtn.addEventListener('click', () => LoadUser(newDiv, id) );
+    newBtn.addEventListener('click', () => loadUser(newDiv, id) );
 
     var newBtnCom = document.createElement('button');
     newBtnCom.innerHTML =  'Comments';
     newBtnCom.className = 'btn btn-primary btn-mar';
     newBtnCom.id = 'newBtnCom'+id;
-    newBtnCom.addEventListener('click', () => LoadComments(newDiv, id) );
+    newBtnCom.addEventListener('click', () => loadComments(newDiv, id) );
 
 
     newFooter.appendChild(newBtn);
@@ -188,31 +191,16 @@ function InsertElemets(id, title, body, user_id) {
 }
 
 
-function DownLoadPosts() {
-  LoadPost(apiURL+ 'posts');
+function downLoadPosts() {
+  loadPost(apiURL+ 'posts');
   var btn = document.getElementById('BtnStart');
 
   btn.classList.add("disabled");
 }
 
-function Close_user(v_id) {
-    var w = document.getElementById('newDivPop' + v_id);
-
-    if (w) {
-        w.remove();
-    } ;
-}
-
-function EstimationUser(arr_input, parent,p_id) {
-
-    var w = document.getElementById('newDivPop' + p_id);
-
-    if (w) {
-        w.remove();
-    } else {
+function estimationUser(arr_input, parent,p_id) {
 
         const { name, username, email, address, phone, website, company} = arr_input[0];
-
 
         var newDivPop = document.createElement('div');
         newDivPop.className = 'modal fade';
@@ -234,8 +222,6 @@ function EstimationUser(arr_input, parent,p_id) {
         var newBody = document.createElement('div');
         newBody.className = 'modal-body';
         newBody.style.fontSize = '10px';
-
-
 
         var newName = document.createElement('p');
         newName.innerHTML = 'Name: ' + name;
@@ -302,8 +288,6 @@ function EstimationUser(arr_input, parent,p_id) {
         var newBs = document.createElement('li');
         newBs.innerHTML = 'Bs: ' + company.bs;
 
-
-
         newUl_company.appendChild(newName_com);
         newUl_company.appendChild(newCatchPhrase);
         newUl_company.appendChild(newBs);
@@ -327,9 +311,6 @@ function EstimationUser(arr_input, parent,p_id) {
         newBtnClose.setAttribute('data-dismiss','modal');
         newBtnClose.innerText = 'Close';
 
-
-
-
         newFooter.appendChild(newBtnClose);
         newHeader.appendChild(newTitle);
 
@@ -339,14 +320,12 @@ function EstimationUser(arr_input, parent,p_id) {
         newDialog.appendChild(newContent);
         newDivPop.appendChild(newDialog);
 
-
-
         parent.appendChild(newDivPop);
         $('#newDivPop' + p_id ).modal();
-    }
+ //  }
 }
 
-function EstimationComments(arr_input, parent,p_id) {
+function estimationComments(arr_input, parent,p_id) {
 
     var w = document.getElementById('newDivPopCom' + p_id);
 
@@ -386,146 +365,134 @@ function EstimationComments(arr_input, parent,p_id) {
 }
 
 
-function RenderPosts(arr) {
+function renderPosts(arr) {
 
     var div_tar = document.getElementById('page');
 
-    page_object.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
+    pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
 
-    for (let i = 0; i < page_object.cnt_page(); i++) {
+    for (let i = 0; i < pageObject.cnt_page(); i++) {
         if (i === 0) {
-            page_object.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * page_object.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
         } else {
-            page_object.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * page_object.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
         };
     }
-    page_object.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
+    pageObject.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
 
-    page_object.paginator = document.querySelector(".pagination");
-    page_object.paginator.innerHTML = page_object.page;
+    pageObject.paginator = document.querySelector(".pagination");
+    pageObject.paginator.innerHTML = pageObject.page;
 
     //выводим первые записи {cnt}
 
   for (let i = 0; i < arr.length; i++){
         (function () {
-            var newDiv = InsertElemets(arr[i].id, arr[i].title, arr[i].body, arr[i].userId);
+            var newDiv = insertElemets(arr[i].id, arr[i].title, arr[i].body, arr[i].userId);
             div_tar.appendChild(newDiv);
         })();
     }
 
-    page_object.div_num = document.querySelectorAll(".num");
+    pageObject.div_num = document.querySelectorAll(".num");
 
-    console.log(page_object.div_num, page_object.div_num.length ,page_object.div_num.style);
-
-    for (var i = 0; i < page_object.div_num.length; i++) {
-        if (i < page_object.cnt) {
-            page_object.div_num[i].style.display = "block";
+    for (var i = 0; i < pageObject.div_num.length; i++) {
+        if (i < pageObject.cnt) {
+            pageObject.div_num[i].style.display = "block";
         }
         else {
-            page_object.div_num[i].style.display = "none";
+            pageObject.div_num[i].style.display = "none";
         }
     }
 
-    page_object.main_page = document.getElementById("page1");
-    page_object.main_page.classList.add("paginator_active");
+    pageObject.main_page = document.getElementById("page1");
+    pageObject.main_page.classList.add("paginator_active");
 }
 
+function changeCountPage(event) {
 
-function change_count_page(event) {
-       var j = document.getElementById('ul_pag').childElementCount;
+    document.getElementById('ul_pag').innerHTML = '';
 
-    for (let i = 0; i < j; i++ ){
-        document.getElementById('ul_pag').childNodes[0].remove();
-    }
+    pageObject.cnt = event.target.value //сколько отображаем сначала
+    pageObject.page='';
 
-    page_object.cnt = event.target.value //сколько отображаем сначала
-    page_object.page='';
+    pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
 
-    console.log(222, page_object.cnt_page(),page_object.cnt );
-    page_object.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=9999  id=\"prev\">Previous</span></li>";
-
-    for (let i = 0; i < page_object.cnt_page(); i++) {
+    for (let i = 0; i < pageObject.cnt_page(); i++) {
         if (i === 0) {
-            page_object.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * page_object.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            pageObject.page += "<li class=\"page-item disabled\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
         } else {
-            page_object.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * page_object.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
+            pageObject.page += "<li class=\"page-item\"><span class=\"page-link\" data-page=" + i * pageObject.cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span></li>";
         };
     }
-    page_object.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
+    pageObject.page +="<li class=\"page-item\"><span class=\"page-link\" data-page=99999  id=\"next\">Next</span></li>";
 
-     console.log(page_object.page);
+    pageObject.paginator = document.querySelector(".pagination");
+    pageObject.paginator.innerHTML = pageObject.page;
 
-
-    page_object.paginator = document.querySelector(".pagination");
-    page_object.paginator.innerHTML = page_object.page;
-
-    for (var i = 0; i < page_object.div_num.length; i++) {
-        if (i < page_object.cnt) {
-            page_object.div_num[i].style.display = "block";
+    for (var i = 0; i < pageObject.div_num.length; i++) {
+        if (i < pageObject.cnt) {
+            pageObject.div_num[i].style.display = "block";
         } else {
-            page_object.div_num[i].style.display = "none";
+            pageObject.div_num[i].style.display = "none";
         }
     }
 
-    page_object.main_page = document.getElementById("page1");
-    page_object.main_page.classList.add("paginator_active");
+    pageObject.main_page = document.getElementById("page1");
+    pageObject.main_page.classList.add("paginator_active");
 }
 
 
-function ul_pagination(event){
+function clickPagination(event){
     var e = event || window.event;
     var target = e.target;
     var id = target.id;
     var parntNode;
     var parntNewNode;
-    console.log(e,target,id);
 
     if (target.tagName.toLowerCase() != "span") return;
 
     var data_page = +target.dataset.page;
 
     if (id ==='next'){
-       id = page_object.main_page.parentNode.nextSibling.childNodes[0].id;
-       data_page = page_object.main_page.parentNode.nextSibling.childNodes[0].dataset.page;
+       id = pageObject.main_page.parentNode.nextSibling.childNodes[0].id;
+       data_page = pageObject.main_page.parentNode.nextSibling.childNodes[0].dataset.page;
      };
 
     if (id === 'prev'){
-        id = page_object.main_page.parentNode.previousSibling.childNodes[0].id;
-        data_page = page_object.main_page.parentNode.previousSibling.childNodes[0].dataset.page;
+        id = pageObject.main_page.parentNode.previousSibling.childNodes[0].id;
+        data_page = pageObject.main_page.parentNode.previousSibling.childNodes[0].dataset.page;
      }
 
-    page_object.main_page.parentNode.classList.remove("disabled");
-    page_object.main_page.classList.remove("paginator_active");
+    pageObject.main_page.parentNode.classList.remove("disabled");
+    pageObject.main_page.classList.remove("paginator_active");
 
-    page_object.main_page = document.getElementById(id);
+    pageObject.main_page = document.getElementById(id);
 
-    page_object.main_page.classList.add("paginator_active");
-    page_object.main_page.parentNode.classList.add("disabled");
+    pageObject.main_page.classList.add("paginator_active");
+    pageObject.main_page.parentNode.classList.add("disabled");
 
     if (parseInt(id.substr(4)) === 1) {
         document.getElementById('prev').parentNode.classList.add("disabled");
-    } else if (parseInt(id.substr(4)) === page_object.cnt_page()) {
+    } else if (parseInt(id.substr(4)) === pageObject.cnt_page()) {
         document.getElementById('next').parentNode.classList.add("disabled");
     } else {
-        console.log('End0', document.getElementById('prev').parentNode,document.getElementById('next').parentNode);
         document.getElementById('prev').parentNode.classList.remove("disabled");
         document.getElementById('next').parentNode.classList.remove("disabled");
     }
 
-    for (var i = 0; i < page_object.div_num.length; i++) {
-        var data_num = page_object.div_num[i].dataset.num;
+    for (var i = 0; i < pageObject.div_num.length; i++) {
+        var data_num = pageObject.div_num[i].dataset.num;
         if (data_num <= data_page || data_num >= data_page) {
-            page_object.div_num[i].style.display = "none";
+            pageObject.div_num[i].style.display = "none";
         }
     }
 
     var j = 0;
 
-    for (var i = data_page; i < page_object.div_num.length; i++) {
-        if (j >= page_object.cnt) break;
-        page_object.div_num[i].style.display = "block";
+    for (var i = data_page; i < pageObject.div_num.length; i++) {
+        if (j >= pageObject.cnt) break;
+        pageObject.div_num[i].style.display = "block";
         j++;
     };
 }
 
-
+})();
