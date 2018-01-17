@@ -15,7 +15,7 @@ var pageObject = {
     div_num : {}
 };
 
-    (function initStartPage()
+    function initStartPage(idLoad)
 {
     var newDivH1 = document.createElement('div');
     newDivH1.id = 'newDivH1';
@@ -91,7 +91,7 @@ var pageObject = {
     newDivPagin.appendChild(newUlPagin);
     newDivRowPag.appendChild(newDivPagin);
 
-    var cont = document.getElementById('container');
+    var cont = document.getElementById(idLoad);
     cont.appendChild(newDivH1);
     cont.appendChild(newDivLoader);
     cont.appendChild(newDivContolElements);
@@ -99,7 +99,7 @@ var pageObject = {
     cont.appendChild(newDivRowPag);
 
 
-})();
+};
 
 function loadPost (url_input) {
     document.getElementById("loader").style.display = 'block';
@@ -496,4 +496,7 @@ function clickPagination(event){
     };
 }
 
-})();
+    return {
+        init(idContainer) { initStartPage(idContainer)}
+           };
+}()).init('container');
