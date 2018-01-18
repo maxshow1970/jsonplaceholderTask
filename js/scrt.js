@@ -92,19 +92,14 @@
 
         newDivPagin.appendChild(newUlPagin);
         newDivRowPag.appendChild(newDivPagin);
-
+    try {
         if (idLoad instanceof Node) {
-           var cont = idLoad;
-            console.log(1, cont);
-        } else if ( typeof idLoad === 'string') {
-            var cont = document.getElementById(idLoad);
-            console.log(1, cont);
+            var cont = idLoad;
+        } else if (typeof idLoad === 'string') {
+           var cont = document.getElementById(idLoad);
         } else {
-            console.log(3);
-            return alert('Данное значение не является ни Нодье, ни id');
+        return alert('Данное значение не является ни Node, ни id');
         }
-
-
 
     //    var cont = document.getElementById(idLoad);
         idLoadDiv = cont;
@@ -113,9 +108,11 @@
         cont.appendChild(newDivContolElements);
         cont.appendChild(newDivRow);
         cont.appendChild(newDivRowPag);
+    }catch ( err ) {
+        return alert('Данное значение не является ни Node, ни id');
+    }
 
-
-    };
+  };
 
     function handleError(parent, typeError, pId) {
 
